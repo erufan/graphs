@@ -12,4 +12,12 @@ graph.connect("erfan", "ali");
 graph.connect("erfan", "ali");
 graph.connect("erfan", "mohsen");
 
-graph.print();
+graph.connect("reza", "ali");
+graph.connect("hasn", "ali");
+
+graph.connect("hasn", "mohsen");
+
+graph.disConnect("erfan", "ali");
+graph.disConnect("mohsen", "ali");
+
+console.log(graph);
