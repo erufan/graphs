@@ -19,14 +19,7 @@ class Graphs {
     if (!nodeToRemove) return;
 
     for (let sourceNode of this.adjacencyList.keys()) {
-      const neighborConnections = this.adjacencyList.get(sourceNode)!;
-
-      if (neighborConnections.length > 0) {
-        this.adjacencyList.set(
-          sourceNode,
-          neighborConnections.filter((connection) => connection.label !== label)
-        );
-      }
+      this.removeConection(sourceNode, label);
     }
 
     this.peopleList.delete(label);
@@ -49,26 +42,34 @@ class Graphs {
 
     if (fromNode == null || toNode == null) return;
 
-    const neighborConnections = this.adjacencyList.get(fromNode)!;
-
-    if (neighborConnections.length > 0) {
-      this.adjacencyList.set(
-        fromNode,
-        neighborConnections.filter((connection) => connection.label !== toLabel)
-      );
-    }
+    this.removeConection(fromNode, toLabel);
   }
 
   public print() {
     for (let sourceNode of this.adjacencyList.keys()) {
-      const neighborConnections = this.adjacencyList.get(sourceNode);
-
-      if (neighborConnections && neighborConnections.length > 0) {
-        let neighbourLable = neighborConnections.map((x) => x.label).join(",");
+      if (this.nodeConnections(sourceNode)!.length > 0) {
+        let neighbourLable = this.nodeConnections(sourceNode)!
+          .map((x) => x.label)
+          .join(",");
 
         console.log(`${sourceNode.label} is connected to ${neighbourLable}`);
       }
     }
+  }
+
+  private removeConection(node: Nodes, label: string) {
+    if (this.nodeConnections(node)!.length > 0) {
+      this.adjacencyList.set(
+        node,
+        this.nodeConnections(node)!.filter(
+          (connection) => connection.label !== label
+        )
+      );
+    }
+  }
+
+  private nodeConnections(node: Nodes) {
+    return this.adjacencyList.get(node);
   }
 }
 

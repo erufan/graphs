@@ -14,10 +14,9 @@ graph.connect("erfan", "mohsen");
 
 graph.connect("reza", "ali");
 graph.connect("hasn", "ali");
+graph.connect("mohsen", "ali");
 
 graph.connect("hasn", "mohsen");
-
-graph.disConnect("erfan", "ali");
-graph.disConnect("mohsen", "ali");
+graph.removeNode("ali");
 
 console.log(graph);
