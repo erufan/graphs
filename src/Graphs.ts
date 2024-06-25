@@ -85,6 +85,46 @@ class Graphs {
     stack.push(node);
   }
 
+  public hasCycle(): boolean {
+    const all: Set<Nodes> = new Set();
+    const visiting: Set<Nodes> = new Set();
+    const visited: Set<Nodes> = new Set();
+    for (let node of this.nodes.values()) {
+      all.add(node);
+    }
+
+    while (all.size > 0) {
+      let current = all.values().next().value;
+      if (this.$hasCycle(current, all, visiting, visited)) return true;
+    }
+
+    return false;
+  }
+
+  private $hasCycle(
+    root: Nodes,
+    all: Set<Nodes>,
+    visiting: Set<Nodes>,
+    visited: Set<Nodes>
+  ) {
+    all.delete(root);
+    visiting.add(root);
+
+    if (this.nodeConnections(root)) {
+      for (let neighbour of this.nodeConnections(root)!) {
+        if (visited.has(neighbour)) continue;
+
+        if (visiting.has(neighbour)) return true;
+
+        if (this.$hasCycle(neighbour, all, visiting, visited)) return true;
+      }
+    }
+    visiting.delete(root);
+    visited.add(root);
+
+    return false;
+  }
+
   private removeConection(node: Nodes, label: string) {
     if (this.nodeConnections(node)!.length > 0) {
       this.adjacencyList.set(
