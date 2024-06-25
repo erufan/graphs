@@ -3,18 +3,18 @@ class Nodes {
 }
 
 class Graphs {
-  private peopleList = new Map<string, Nodes>();
+  private nodes = new Map<string, Nodes>();
   private adjacencyList = new Map<Nodes, Nodes[]>();
 
   public insert(label: string) {
     const node = new Nodes(label);
 
-    this.peopleList.set(label, node);
+    this.nodes.set(label, node);
     this.adjacencyList.set(node, []);
   }
 
   public removeNode(label: string) {
-    const nodeToRemove = this.peopleList.get(label);
+    const nodeToRemove = this.nodes.get(label);
 
     if (!nodeToRemove) return;
 
@@ -22,23 +22,23 @@ class Graphs {
       this.removeConection(sourceNode, label);
     }
 
-    this.peopleList.delete(label);
+    this.nodes.delete(label);
     this.adjacencyList.delete(nodeToRemove);
   }
 
   public connect(from: string, to: string) {
-    const fromNode = this.peopleList.get(from);
+    const fromNode = this.nodes.get(from);
     if (fromNode == null) throw new Error("wrong from node");
 
-    const toNode = this.peopleList.get(to);
+    const toNode = this.nodes.get(to);
     if (toNode == null) throw new Error("wrong to node");
 
     this.adjacencyList.get(fromNode)?.push(toNode);
   }
 
   public disConnect(fromLabel: string, toLabel: string) {
-    const fromNode = this.peopleList.get(fromLabel);
-    const toNode = this.peopleList.get(toLabel);
+    const fromNode = this.nodes.get(fromLabel);
+    const toNode = this.nodes.get(toLabel);
 
     if (fromNode == null || toNode == null) return;
 
@@ -55,6 +55,34 @@ class Graphs {
         console.log(`${sourceNode.label} is connected to ${neighbourLable}`);
       }
     }
+  }
+
+  public topologicalsorts(): string[] {
+    let stack: Nodes[] = [];
+    let visited: Set<Nodes> = new Set();
+    let list: string[] = [];
+
+    for (let node of this.nodes.values()) {
+      this.$topologicalsorts(node, stack, visited);
+    }
+    while (stack.length > 0) {
+      list.push(stack.pop()!.label!);
+    }
+
+    return list;
+  }
+
+  public $topologicalsorts(node: Nodes, stack: Nodes[], visited: Set<Nodes>) {
+    if (visited.has(node)) return;
+
+    visited.add(node);
+
+    if (this.nodeConnections(node)) {
+      for (let neighbour of this.nodeConnections(node)!) {
+        this.$topologicalsorts(neighbour, stack, visited);
+      }
+    }
+    stack.push(node);
   }
 
   private removeConection(node: Nodes, label: string) {
